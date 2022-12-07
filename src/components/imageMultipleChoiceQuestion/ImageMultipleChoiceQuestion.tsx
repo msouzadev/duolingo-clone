@@ -40,7 +40,7 @@ const ImageMultipleChoiceQuestion = ({
     Alert.alert("Wroong");
   };
   return (
-    <View {...{ width }}>
+    <View {...{ width }} style={{ paddingHorizontal: 10 }}>
       <Text style={styles.title}>{question.question}</Text>
       <View style={styles.optionsContainer}>
         {question.options.map((option, index) => (
@@ -63,13 +63,6 @@ const ImageMultipleChoiceQuestion = ({
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-  },
-
   title: { fontSize: 20, fontWeight: "bold", alignSelf: "stretch" },
   optionsContainer: {
     width: "100%",

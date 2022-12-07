@@ -8,19 +8,20 @@ import {
 } from "react-native";
 import imageQuestions from "./assets/data/imageMulatipleChoiceQuestions";
 import ImageMultipleChoiceQuestion from "./src/components/imageMultipleChoiceQuestion/ImageMultipleChoiceQuestion";
-
+import OpenEndedQuestion from "./src/components/openEndedQuestion/OpenEndedQuestion";
+import openEndedQuestions from "./assets/data/openEndedQuestions";
 export default function App() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const { width } = useWindowDimensions();
 
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const allQuestions = [...imageQuestions];
+  const allQuestions = [...imageQuestions, ...openEndedQuestions].sort();
   const handleNextQuestion = () => {
-    console.log({ currentQuestionIndex });
     if (allQuestions.length === currentQuestionIndex + 1) {
       return;
     }
+
     scrollViewRef.current?.scrollTo({
       y: 0,
       x: (currentQuestionIndex + 1) * width,
@@ -37,13 +38,23 @@ export default function App() {
         scrollEnabled={false}
         contentContainerStyle={{ paddingTop: 40 }}
       >
-        {allQuestions.map((question, index) => (
-          <ImageMultipleChoiceQuestion
-            key={`question-${index}`}
-            question={question}
-            onCorrect={handleNextQuestion}
-          />
-        ))}
+        {allQuestions.map((question, index) => {
+          if (question.type === "OPEN_ENDED") {
+            return (
+              <OpenEndedQuestion
+                question={question}
+                onCorrect={handleNextQuestion}
+              />
+            );
+          }
+          return (
+            <ImageMultipleChoiceQuestion
+              key={`question-${index}`}
+              question={question}
+              onCorrect={handleNextQuestion}
+            />
+          );
+        })}
       </ScrollView>
       <StatusBar style="auto" />
     </View>
@@ -53,17 +64,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-    // paddingTop: 20,
-  },
 
-  title: { fontSize: 20, fontWeight: "bold", alignSelf: "stretch" },
-  optionsContainer: {
-    width: "100%",
-    marginTop: 10,
-    flexDirection: "row",
-    flexWrap: "wrap",
+    paddingTop: 10,
   },
 });
