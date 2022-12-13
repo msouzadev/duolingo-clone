@@ -6,6 +6,7 @@ import {
   Text,
   StyleSheet,
 } from "react-native";
+import { CommonQuestion } from "../../../App";
 import Button from "../button/Button";
 import ImageOption from "../imageOption/ImageOption";
 
@@ -16,12 +17,12 @@ interface Option {
   text: string;
 }
 
-interface Question {
+export interface ImageMultipleChoiceQuestionType extends CommonQuestion {
   question: string;
   options: Option[];
 }
 interface ImageMultipleChoiceQuestionProps {
-  question: Question;
+  question: ImageMultipleChoiceQuestionType;
   onCorrect: () => void;
 }
 const ImageMultipleChoiceQuestion = ({
@@ -43,7 +44,7 @@ const ImageMultipleChoiceQuestion = ({
     <View {...{ width }} style={{ paddingHorizontal: 10 }}>
       <Text style={styles.title}>{question.question}</Text>
       <View style={styles.optionsContainer}>
-        {question.options.map((option, index) => (
+        {question.options.map((option: Option, index: number) => (
           <ImageOption
             style={{
               marginLeft: index % 2 === 0 ? 0 : 20,

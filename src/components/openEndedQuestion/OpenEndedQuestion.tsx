@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,13 +7,31 @@ import {
   TextInput,
   Dimensions,
 } from "react-native";
-import mascot from "../../../assets/images/mascot.png";
+import { CommonQuestion } from "../../../App";
 
 import Button from "../button/Button";
 const { width } = Dimensions.get("window");
 
-const OpenEndedQuestion = ({ question, onCorrect }) => {
-  const checkSentence = () => {};
+const mascot = require("../../../assets/images/mascot.png");
+export interface OpenEndedQuestionType extends CommonQuestion {
+  sentence: string;
+  text: string;
+  answer: string;
+}
+interface OpenEndedQuestionProps {
+  question: OpenEndedQuestionType;
+  onCorrect: () => void;
+}
+const OpenEndedQuestion = ({ question, onCorrect }: OpenEndedQuestionProps) => {
+  const [input, setInputValue] = useState("");
+  const checkSentence = () => {
+    console.log({ question });
+    if (
+      question.answer.toLowerCase().trim() === input.toLocaleLowerCase().trim()
+    ) {
+      onCorrect();
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Translate this sentence</Text>
@@ -24,11 +42,13 @@ const OpenEndedQuestion = ({ question, onCorrect }) => {
         </View>
       </View>
       <TextInput
+        value={input}
+        onChangeText={setInputValue}
         multiline={true}
         style={styles.textInput}
         placeholder="Type in English"
       />
-      <Button title="Check" onPress={checkSentence} disabled />
+      <Button title="Check" onPress={checkSentence} disabled={!input} />
     </View>
   );
 };

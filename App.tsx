@@ -6,17 +6,39 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import imageQuestions from "./assets/data/imageMulatipleChoiceQuestions";
-import ImageMultipleChoiceQuestion from "./src/components/imageMultipleChoiceQuestion/ImageMultipleChoiceQuestion";
-import OpenEndedQuestion from "./src/components/openEndedQuestion/OpenEndedQuestion";
-import openEndedQuestions from "./assets/data/openEndedQuestions";
+import ImageMultipleChoiceQuestion, {
+  ImageMultipleChoiceQuestionType,
+} from "./src/components/imageMultipleChoiceQuestion/ImageMultipleChoiceQuestion";
+import OpenEndedQuestion, {
+  OpenEndedQuestionType,
+} from "./src/components/openEndedQuestion/OpenEndedQuestion";
+import questions from "./assets/data/allQuestions";
+
+export interface CommonQuestion {
+  id: string;
+  type: string;
+}
+const randomizeQuestions = () => {
+  const allQuestions = questions;
+  let newArray = [];
+  let addedIndexes: number[] = [];
+  while (newArray.length !== allQuestions.length) {
+    const randomIndex = Math.floor(Math.random() * allQuestions.length);
+    if (!addedIndexes.includes(randomIndex)) {
+      addedIndexes.push(randomIndex);
+      newArray.push(allQuestions[randomIndex]);
+    }
+  }
+  return newArray;
+};
+const allQuestions = randomizeQuestions();
+console.log({ allQuestions });
 export default function App() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const { width } = useWindowDimensions();
 
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const allQuestions = [...imageQuestions, ...openEndedQuestions].sort();
   const handleNextQuestion = () => {
     if (allQuestions.length === currentQuestionIndex + 1) {
       return;
@@ -42,15 +64,16 @@ export default function App() {
           if (question.type === "OPEN_ENDED") {
             return (
               <OpenEndedQuestion
-                question={question}
+                key={question.id}
+                question={question as OpenEndedQuestionType}
                 onCorrect={handleNextQuestion}
               />
             );
           }
           return (
             <ImageMultipleChoiceQuestion
-              key={`question-${index}`}
-              question={question}
+              key={question.id}
+              question={question as ImageMultipleChoiceQuestionType}
               onCorrect={handleNextQuestion}
             />
           );
