@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -21,17 +21,26 @@ export interface OpenEndedQuestionType extends CommonQuestion {
 interface OpenEndedQuestionProps {
   question: OpenEndedQuestionType;
   onCorrect: () => void;
+  onWrong: () => void;
 }
-const OpenEndedQuestion = ({ question, onCorrect }: OpenEndedQuestionProps) => {
+const OpenEndedQuestion = ({
+  question,
+  onCorrect,
+  onWrong,
+}: OpenEndedQuestionProps) => {
   const [input, setInputValue] = useState("");
   const checkSentence = () => {
     console.log({ question });
     if (
       question.answer.toLowerCase().trim() === input.toLocaleLowerCase().trim()
     ) {
-      onCorrect();
+      return onCorrect();
     }
+    onWrong();
   };
+  useEffect(() => {
+    console.log("render opendeed");
+  }, []);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Translate this sentence</Text>

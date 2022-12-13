@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   useWindowDimensions,
@@ -24,10 +24,12 @@ export interface ImageMultipleChoiceQuestionType extends CommonQuestion {
 interface ImageMultipleChoiceQuestionProps {
   question: ImageMultipleChoiceQuestionType;
   onCorrect: () => void;
+  onWrong: () => void;
 }
 const ImageMultipleChoiceQuestion = ({
   question,
   onCorrect,
+  onWrong,
 }: ImageMultipleChoiceQuestionProps) => {
   const [selectedOption, setSelectedOption] = useState<Option>();
   const { width } = useWindowDimensions();
@@ -38,8 +40,11 @@ const ImageMultipleChoiceQuestion = ({
     if (selectedOption?.correct) {
       return onCorrect();
     }
-    Alert.alert("Wroong");
+    onWrong();
   };
+  useEffect(() => {
+    console.log("render image multiple choice");
+  }, []);
   return (
     <View {...{ width }} style={{ paddingHorizontal: 10 }}>
       <Text style={styles.title}>{question.question}</Text>
@@ -70,6 +75,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: "row",
     flexWrap: "wrap",
+    flex: 1,
   },
 });
 
