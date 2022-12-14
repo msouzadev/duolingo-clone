@@ -9,12 +9,13 @@ import {
 
 // import { Container } from './styles';
 
-const ProgressBar = ({ total = 10, current = 3 }) => {
+const ProgressBar = ({ total, current }) => {
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const { width } = useWindowDimensions();
   const translatXValue = useRef(new Animated.Value(-width));
   useEffect(() => {
     const progress = -progressBarWidth + (progressBarWidth * current) / total;
+    console.log({ progress: progress });
     Animated.timing(translatXValue.current, {
       toValue: progress,
       useNativeDriver: true,

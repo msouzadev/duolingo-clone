@@ -33,20 +33,22 @@ const ImageMultipleChoiceQuestion = ({
 }: ImageMultipleChoiceQuestionProps) => {
   const [selectedOption, setSelectedOption] = useState<Option>();
   const { width } = useWindowDimensions();
-  const handleSelectOption = (option: Option) => () =>
+  const handleSelectOption = (option: Option) => () => {
     setSelectedOption(option);
+  };
 
   const onPressCheck = () => {
     if (selectedOption?.correct) {
+      setSelectedOption({} as Option);
       return onCorrect();
     }
+
     onWrong();
+    setSelectedOption({} as Option);
   };
-  useEffect(() => {
-    console.log("render image multiple choice");
-  }, []);
+
   return (
-    <View {...{ width }} style={{ paddingHorizontal: 10 }}>
+    <View {...{ width }} style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
       <Text style={styles.title}>{question.question}</Text>
       <View style={styles.optionsContainer}>
         {question.options.map((option: Option, index: number) => (

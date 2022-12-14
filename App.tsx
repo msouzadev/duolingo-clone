@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
 import {
   Alert,
+  FlatList,
   ScrollView,
   StyleSheet,
   useWindowDimensions,
@@ -15,14 +16,14 @@ import ImageMultipleChoiceQuestion, {
 import OpenEndedQuestion, {
   OpenEndedQuestionType,
 } from "./src/components/openEndedQuestion/OpenEndedQuestion";
-import questions from "./assets/data/allQuestions";
+import mockQuestions from "./assets/data/allQuestions";
 
 export interface CommonQuestion {
   id: string;
   type: string;
 }
 const randomizeQuestions = () => {
-  const allQuestions = questions;
+  const allQuestions = mockQuestions;
   let newArray = [];
   let addedIndexes: number[] = [];
   while (newArray.length !== allQuestions.length) {
@@ -42,16 +43,15 @@ export default function App() {
   const [lives, setLives] = useState(5);
   const { width } = useWindowDimensions();
 
-  const scrollViewRef = useRef<ScrollView>(null);
+  const flatListRef = useRef<FlatList>(null);
 
   const handleNextQuestion = () => {
     if (allQuestions.length === currentQuestionIndex + 1) {
       return;
     }
 
-    scrollViewRef.current?.scrollTo({
-      y: 0,
-      x: (currentQuestionIndex + 1) * width,
+    flatListRef.current?.scrollToOffset({
+      offset: (currentQuestionIndex + 1) * width,
       animated: true,
     });
     setCurrentQuestionIndex((current) => current + 1);
@@ -69,18 +69,45 @@ export default function App() {
   const restart = () => {
     setLives(5);
     setQuestions(randomizeQuestions());
-    scrollViewRef.current?.scrollTo({
-      y: 0,
-      x: 0,
+    flatListRef.current?.scrollToOffset({
+      offset: 0,
       animated: false,
     });
 
     setCurrentQuestionIndex(0);
   };
+  console.log({ currentQuestionIndex });
   return (
     <View style={styles.container}>
       <Header currentQuestionIndex={currentQuestionIndex + 1} lives={lives} />
-      <ScrollView
+      <FlatList
+        horizontal
+        ref={flatListRef}
+        data={questions}
+        extraData={questions}
+        scrollEnabled={false}
+        renderItem={({ item }) => {
+          if (item.type === "OPEN_ENDED") {
+            return (
+              <OpenEndedQuestion
+                key={item.id}
+                question={item as OpenEndedQuestionType}
+                onCorrect={handleNextQuestion}
+                onWrong={onWrong}
+              />
+            );
+          }
+          return (
+            <ImageMultipleChoiceQuestion
+              key={item.id}
+              question={item as ImageMultipleChoiceQuestionType}
+              onCorrect={handleNextQuestion}
+              onWrong={onWrong}
+            />
+          );
+        }}
+      />
+      {/* <ScrollView
         ref={scrollViewRef}
         horizontal
         scrollEnabled={false}
@@ -106,7 +133,7 @@ export default function App() {
             />
           );
         })}
-      </ScrollView>
+      </ScrollView> */}
       <StatusBar style="auto" />
     </View>
   );

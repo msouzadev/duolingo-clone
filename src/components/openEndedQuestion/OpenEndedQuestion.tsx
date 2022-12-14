@@ -34,8 +34,10 @@ const OpenEndedQuestion = ({
     if (
       question.answer.toLowerCase().trim() === input.toLocaleLowerCase().trim()
     ) {
+      setInputValue("");
       return onCorrect();
     }
+    setInputValue("");
     onWrong();
   };
   useEffect(() => {
@@ -65,10 +67,12 @@ const OpenEndedQuestion = ({
 const styles = StyleSheet.create({
   container: {
     width,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     flex: 1,
+    paddingBottom: 20,
   },
   title: {
+    marginVertical: 10,
     fontSize: 18,
     fontWeight: "bold",
     alignSelf: "stretch",
