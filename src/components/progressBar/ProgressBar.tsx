@@ -15,12 +15,12 @@ const ProgressBar = ({ total, current }) => {
   const translatXValue = useRef(new Animated.Value(-width));
   useEffect(() => {
     const progress = -progressBarWidth + (progressBarWidth * current) / total;
-    console.log({ progress: progress });
+    console.log({ progress: progress, total });
     Animated.timing(translatXValue.current, {
       toValue: progress,
       useNativeDriver: true,
     }).start();
-  }, [total, current]);
+  }, [total, current, progressBarWidth]);
   return (
     <View
       style={styles.bg}

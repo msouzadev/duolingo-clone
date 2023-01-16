@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import {
   View,
   StyleSheet,
@@ -6,6 +7,10 @@ import {
   Image,
   TextInput,
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Animated,
 } from "react-native";
 import { CommonQuestion } from "../../../App";
 
@@ -44,23 +49,32 @@ const OpenEndedQuestion = ({
     console.log("render opendeed");
   }, []);
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Translate this sentence</Text>
-      <View style={styles.row}>
-        <Image resizeMode="contain" source={mascot} style={styles.mascot} />
-        <View style={styles.sentenceContainer}>
-          <Text style={styles.sentence}>{question.text}</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flex: 1, paddingBottom: 50 }}
+      >
+        <View style={styles.container}>
+          <Text style={styles.title}>Translate this sentence</Text>
+          <View style={styles.row}>
+            <Image resizeMode="contain" source={mascot} style={styles.mascot} />
+            <View style={styles.sentenceContainer}>
+              <Text style={styles.sentence}>{question.text}</Text>
+            </View>
+          </View>
+          <TextInput
+            value={input}
+            onChangeText={setInputValue}
+            multiline={true}
+            style={styles.textInput}
+            placeholder="Type in English"
+          />
+          <Button title="Check" onPress={checkSentence} disabled={!input} />
         </View>
-      </View>
-      <TextInput
-        value={input}
-        onChangeText={setInputValue}
-        multiline={true}
-        style={styles.textInput}
-        placeholder="Type in English"
-      />
-      <Button title="Check" onPress={checkSentence} disabled={!input} />
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

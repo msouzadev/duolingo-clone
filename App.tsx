@@ -4,7 +4,6 @@ import Constants from "expo-constants";
 import {
   Alert,
   FlatList,
-  ScrollView,
   StyleSheet,
   useWindowDimensions,
   View,
@@ -17,6 +16,9 @@ import OpenEndedQuestion, {
   OpenEndedQuestionType,
 } from "./src/components/openEndedQuestion/OpenEndedQuestion";
 import mockQuestions from "./assets/data/allQuestions";
+import FillInTheBlank, {
+  FillIntheBlankQuestion,
+} from "./src/components/fillInTheBlank/FillInTheBlank";
 
 export interface CommonQuestion {
   id: string;
@@ -36,11 +38,11 @@ const randomizeQuestions = () => {
   return newArray;
 };
 const allQuestions = randomizeQuestions();
-console.log({ allQuestions });
+
 export default function App() {
   const [questions, setQuestions] = useState(randomizeQuestions());
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [lives, setLives] = useState(5);
+  const [lives, setLives] = useState(105);
   const { width } = useWindowDimensions();
 
   const flatListRef = useRef<FlatList>(null);
@@ -86,12 +88,22 @@ export default function App() {
         data={questions}
         extraData={questions}
         scrollEnabled={false}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           if (item.type === "OPEN_ENDED") {
             return (
               <OpenEndedQuestion
                 key={item.id}
                 question={item as OpenEndedQuestionType}
+                onCorrect={handleNextQuestion}
+                onWrong={onWrong}
+              />
+            );
+          }
+          if (item.type === "FILL_IN_THE_BLANK") {
+            return (
+              <FillInTheBlank
+                question={item as FillIntheBlankQuestion}
                 onCorrect={handleNextQuestion}
                 onWrong={onWrong}
               />
@@ -107,33 +119,7 @@ export default function App() {
           );
         }}
       />
-      {/* <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        scrollEnabled={false}
-        contentContainerStyle={{ paddingTop: 10 }}
-      >
-        {questions.map((question) => {
-          if (question.type === "OPEN_ENDED") {
-            return (
-              <OpenEndedQuestion
-                key={question.id}
-                question={question as OpenEndedQuestionType}
-                onCorrect={handleNextQuestion}
-                onWrong={onWrong}
-              />
-            );
-          }
-          return (
-            <ImageMultipleChoiceQuestion
-              key={question.id}
-              question={question as ImageMultipleChoiceQuestionType}
-              onCorrect={handleNextQuestion}
-              onWrong={onWrong}
-            />
-          );
-        })}
-      </ScrollView> */}
+
       <StatusBar style="auto" />
     </View>
   );
