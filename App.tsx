@@ -42,7 +42,7 @@ const allQuestions = randomizeQuestions();
 export default function App() {
   const [questions, setQuestions] = useState(randomizeQuestions());
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [lives, setLives] = useState(105);
+  const [lives, setLives] = useState(5);
   const { width } = useWindowDimensions();
 
   const flatListRef = useRef<FlatList>(null);
